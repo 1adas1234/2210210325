@@ -1,0 +1,48 @@
+﻿import numpy as np
+
+# 给定的矩阵
+joint_distribution = np.array([
+    [0.125, 0.0625, 0.03125, 0.03125],
+    [0.0625, 0.125, 0.03125, 0.03125],
+    [0.0625, 0.0625, 0.0625, 0.0625],
+    [0.25, 0, 0, 0]
+])
+
+# 计算 X 和 Y 的边缘概率分布
+p_x = np.sum(joint_distribution, axis=1)
+p_y = np.sum(joint_distribution, axis=0)
+
+# 计算熵 H(X), H(Y), 和 H(X, Y)
+def entropy(p):
+    return -np.sum(p[p > 0] * np.log2(p[p > 0]))
+
+H_X = entropy(p_x)
+H_Y = entropy(p_y)
+H_XY = entropy(joint_distribution.flatten())
+
+H_X, H_Y, H_XY
+
+第二次
+joint_distribution = np.array([
+    [0.375, 0.0625, 0.03125, 0],
+    [0.0625, 0.125, 0.03125, 0.0625],
+    [0.0625, 0.0625, 0.0625, 0.0625]
+])
+
+# 定义一个处理 log(0) = 0 的熵计算函数
+def entropy_with_log0(p):
+    return -np.sum(p[p > 0] * np.log2(p[p > 0]))
+
+# 重新计算熵 H(X), H(Y), 和 H(X, Y)
+H_X = entropy_with_log0(p_x)
+H_Y = entropy_with_log0(p_y)
+H_XY = entropy_with_log0(joint_distribution.flatten())
+
+# 重新计算条件熵 H(X|Y) 和 H(Y|X)
+H_X_given_Y = conditional_entropy_corrected(joint_distribution, p_y)
+H_Y_given_X = conditional_entropy_corrected(joint_distribution.T, p_x)
+
+# 重新计算互信息 I(X, Y)
+I_XY = H_X + H_Y - H_XY
+
+H_X, H_Y, H_XY, H_X_given_Y, H_Y_given_X, I_XY
